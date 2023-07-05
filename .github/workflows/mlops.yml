@@ -1,11 +1,6 @@
 name: MLOps
 
 on:
-  # Runs on pushes targeting main branch
-  push:
-    branches:
-      - main
-
   # Runs on pull requests
   pull_request:
 
@@ -13,11 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  train:
+  train-and-report:
+    permissions: write-all
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -28,39 +27,16 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
+      - name: Setup CML
+        uses: iterative/setup-cml@v1
+        with:
+          version: '0.19.1'
       - name: Train model
         run: |
           # Pull data from DVC
           dvc pull
           # Run the experiment
           dvc repro
-
-  report:
-    permissions: write-all
-    needs: train
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Setup DVC
-        uses: iterative/setup-dvc@v1
-        with:
-          version: '3.2.2'
-      - name: Login to Google Cloud
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-      - name: Setup CML
-        uses: iterative/setup-cml@v1
-        with:
-          version: '0.19.1'
       - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
