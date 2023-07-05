@@ -48,7 +48,7 @@ jobs:
       - name: Setup DVC
         uses: iterative/setup-dvc@v1
         with:
-          version: '2.37.0'
+          version: '3.2.2'
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
@@ -60,7 +60,7 @@ jobs:
       - name: Setup CML
         uses: iterative/setup-cml@v1
         with:
-          version: '0.18.17'
+          version: '0.19.1'
       - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
