@@ -1,6 +1,7 @@
 name: MLOps
 
 on:
+  # Runs on pushes targeting main branch
   push:
     branches:
       - main
@@ -41,14 +42,6 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-      - name: Setup CML
-        uses: iterative/setup-cml@v1
-        with:
-          version: '0.19.1'
       - name: Train model
         run: |
           # Run the experiment
@@ -60,6 +53,16 @@ jobs:
         with:
           commit_message: Commit changes in dvc.lock
           file_pattern: dvc.lock
+      - name: Setup Node
+        if: github.event_name == 'pull_request'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Setup CML
+        if: github.event_name == 'pull_request'
+        uses: iterative/setup-cml@v1
+        with:
+          version: '0.19.1'
       - name: Create CML report
         if: github.event_name == 'pull_request'
         env:
