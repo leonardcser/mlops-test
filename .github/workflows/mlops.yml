@@ -1,8 +1,25 @@
 name: MLOps
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+        - src/**
+        - dvc.yaml
+        - params.yaml
+        - requirements.txt
+        - requirements-freeze.txt
+        - .github/workflows/mlops.yml
   # Runs on pull requests
   pull_request:
+    paths:
+        - src/**
+        - dvc.yaml
+        - params.yaml
+        - requirements.txt
+        - requirements-freeze.txt
+        - .github/workflows/mlops.yml
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -42,7 +59,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Commit changes in dvc.lock
-          branch: dvc-pipeline
           file_pattern: dvc.lock
       - name: Create CML report
         if: github.event_name == 'pull_request'
