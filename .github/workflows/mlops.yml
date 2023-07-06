@@ -1,9 +1,6 @@
 name: MLOps
 
 on:
-  push:
-    branches:
-      - main
   # Runs on pull requests
   pull_request:
 
@@ -42,7 +39,6 @@ jobs:
           # Run the experiment
           dvc repro
       - name: Create CML report
-        if: ${{ github.event_name == 'pull_request' }}
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
