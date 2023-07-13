@@ -12,6 +12,7 @@ on:
         - requirements.txt
         - requirements-freeze.txt
         - .github/workflows/mlops.yml
+
   # Runs on pull requests
   pull_request:
     paths:
@@ -37,22 +38,23 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
-        run: pip install -r requirements-freeze.txt
+        run: pip install --requirement requirements-freeze.txt
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
       - name: Train model
-        run: |
-          # Run the experiment
-          dvc repro --pull --allow-missing
-          # Push the changes to the remote repository
-          dvc push
+        run: dvc repro --pull --allow-missing
+      # After the experiment is done we update the dvc.lock and push the changes with dvc. This allows dvc to cache the experiment
+      # results and use them in locally and remotely on pipelines without running the experiment again.
       - name: Commit changes in dvc.lock
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Commit changes in dvc.lock
           file_pattern: dvc.lock
+      - name: Push experiment results to DVC remote storage
+        run: dvc push
+      # Node is required to run CML
       - name: Setup Node
         if: github.event_name == 'pull_request'
         uses: actions/setup-node@v3
