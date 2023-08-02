@@ -4,24 +4,10 @@ on:
   # Runs on pushes targeting main branch
   push:
     branches:
-      - main
-    paths:
-        - src/**
-        - dvc.yaml
-        - params.yaml
-        - requirements.txt
-        - requirements-freeze.txt
-        - .github/workflows/mlops.yml
+        - main
 
   # Runs on pull requests
   pull_request:
-    paths:
-        - src/**
-        - dvc.yaml
-        - params.yaml
-        - requirements.txt
-        - requirements-freeze.txt
-        - .github/workflows/mlops.yml
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -45,15 +31,6 @@ jobs:
           credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
       - name: Train model
         run: dvc repro --pull --allow-missing
-      # After the experiment is done we update the dvc.lock and push the changes with dvc. This allows dvc to cache the experiment
-      # results and use them in locally and remotely on pipelines without running the experiment again.
-      - name: Commit changes in dvc.lock
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Commit changes in dvc.lock
-          file_pattern: dvc.lock
-      - name: Push experiment results to DVC remote storage
-        run: dvc push
       # Node is required to run CML
       - name: Setup Node
         if: github.event_name == 'pull_request'
@@ -73,48 +50,43 @@ jobs:
           # Fetch all other Git branches
           git fetch --depth=1 origin main:main
 
+          # Add title to the report
+          echo "# Experiment Report (${{ github.sha }})" >> report.md
+
           # Compare parameters to main branch
-          echo "# Params workflow vs. main" >> report.md
-          echo >> report.md
+          echo "## Params workflow vs. main" >> report.md
           dvc params diff main --md >> report.md
-          echo >> report.md
 
           # Compare metrics to main branch
-          echo "# Metrics workflow vs. main" >> report.md
-          echo >> report.md
+          echo "## Metrics workflow vs. main" >> report.md
           dvc metrics diff main --md >> report.md
-          echo >> report.md
 
           # Compare plots (images) to main branch
           dvc plots diff main
 
           # Create plots
-          echo "# Plots" >> report.md
-          echo >> report.md
+          echo "## Plots" >> report.md
 
           # Create training history plot
-          echo "## Training History" >> report.md
-          echo >> report.md
+          echo "### Training History" >> report.md
+          echo "#### main" >> report.md
           echo '![](./dvc_plots/static/main_evaluation_plots_training_history.png "Training History")' >> report.md
-          echo >> report.md
+          echo "#### workspace" >> report.md
           echo '![](./dvc_plots/static/workspace_evaluation_plots_training_history.png "Training History")' >> report.md
-          echo >> report.md
 
           # Create predictions preview
-          echo "## Predictions Preview" >> report.md
-          echo >> report.md
+          echo "### Predictions Preview" >> report.md
+          echo "#### main" >> report.md
           echo '![](./dvc_plots/static/main_evaluation_plots_pred_preview.png "Predictions Preview")' >> report.md
-          echo >> report.md
+          echo "#### workspace" >> report.md
           echo '![](./dvc_plots/static/workspace_evaluation_plots_pred_preview.png "Predictions Preview")' >> report.md
-          echo >> report.md
 
           # Create confusion matrix
-          echo "## Confusion Matrix" >> report.md
-          echo >> report.md
+          echo "### Confusion Matrix" >> report.md
+          echo "#### main" >> report.md
           echo '![](./dvc_plots/static/main_evaluation_plots_confusion_matrix.png "Confusion Matrix")' >> report.md
-          echo >> report.md
+          echo "#### workspace" >> report.md
           echo '![](./dvc_plots/static/workspace_evaluation_plots_confusion_matrix.png "Confusion Matrix")' >> report.md
-          echo >> report.md
 
           # Publish the CML report
           cml comment update --target=pr --publish report.md

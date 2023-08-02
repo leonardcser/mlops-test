@@ -5,13 +5,13 @@ artifacts:
     type: dvc
     uri: model/model
   postprocess/data.pkl:
-    hash: 2c040f7e68d9e620cb9ecac5de98c037
-    size: 1428
+    hash: d111b5a13ef22e6ade9d399f80b9a3d6
+    size: 1386
     type: dvc
     uri: model/postprocess
   preprocess/data.pkl:
-    hash: f519b13afbdd142ebf7e7b863b0f44d9
-    size: 1040
+    hash: 6ee174d0357c4c62e5c831c7e98796ca
+    size: 998
     type: dvc
     uri: model/preprocess
 call_orders:
@@ -128,6 +128,9 @@ processors:
 requirements:
 - module: tensorflow
   version: 2.12.0
+- module: yaml
+  package_name: PyYAML
+  version: '6.0'
 - is_package: false
   module: __main__
   name: __main__
@@ -135,9 +138,6 @@ requirements:
   type: custom
 - module: numpy
   version: 1.23.5
-- module: yaml
-  package_name: PyYAML
-  version: '6.0'
 - module: keras
   version: 2.12.0
 - is_package: true
