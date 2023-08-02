@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: pip install -r requirements-freeze.txt
+        run: pip install -r requirements.txt
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
