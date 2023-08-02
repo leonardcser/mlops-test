@@ -26,5 +26,10 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.MLEM_GCP_SERVICE_ACCOUNT_KEY }}'
+      - name: Get Google Cloud's Kubernetes credentials
+        uses: 'google-github-actions/get-gke-credentials@v1'
+        with:
+          cluster_name: 'mlops-kubernetes'
+          location: 'europe-west6-a'
       - name: Deploy the model
         run: mlem deployment run --load service_classifier --model model
