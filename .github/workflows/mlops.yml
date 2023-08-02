@@ -37,7 +37,7 @@ jobs:
           version: '0.19.0'
       - name: Initialize runner on Kubernetes
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_PAT }}
+          REPO_TOKEN: ${{ secrets.CML_PAT }}
         run: |
           export KUBERNETES_CONFIGURATION=$(cat $KUBECONFIG)
           # https://cml.dev/doc/ref/runner
