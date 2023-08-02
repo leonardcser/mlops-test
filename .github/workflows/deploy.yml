@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  # Runs on pushes targeting main branch
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install -r requirements-freeze.txt
+      - name: Login to Google Cloud
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.MLEM_GCP_SERVICE_ACCOUNT_KEY }}'
+      - name: Deploy the model
+        run: mlem deployment run --load service_classifier --model model
