@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-freeze.txt
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
