@@ -144,3 +144,9 @@ jobs:
 
           # Publish the CML report
           cml comment update --target=pr --publish report.md
+  
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: train
+    name: Call Deploy
+    uses: ./.github/workflows/deploy.yml
