@@ -26,7 +26,7 @@ jobs:
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.CML_GCP_SERVICE_ACCOUNT_KEY }}'
+          credentials_json: '${{ secrets.MLEM_GCP_SERVICE_ACCOUNT_KEY }}'
       - name: Get Google Cloud's Kubernetes credentials
         uses: 'google-github-actions/get-gke-credentials@v1'
         with:
@@ -39,7 +39,6 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.CML_PAT }}
         run: |
-          export KUBERNETES_CONFIGURATION=$(cat $KUBECONFIG)
           # https://cml.dev/doc/ref/runner
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#machine-type
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#{cpu}-{memory}
@@ -154,7 +153,7 @@ jobs:
           cml comment update --target=pr --publish report.md
   
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: train
     name: Call Deploy
     uses: ./.github/workflows/deploy.yml
