@@ -48,7 +48,6 @@ jobs:
             --cloud="kubernetes" \
             --cloud-type="1-2000" \
             --cloud-kubernetes-node-selector="gpu=true" \
-            --cloud-permissions-set=${{ CML_SERVICE_ACCOUNT_EMAIL }} \
             --single
 
   train:
