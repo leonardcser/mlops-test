@@ -35,11 +35,12 @@ jobs:
       - uses: iterative/setup-cml@v1
         with:
           version: '0.19.0'
+      - name: Debug
+        run: echo $KUBECONFIG
       - name: Initialize runner on Kubernetes
         env:
           REPO_TOKEN: ${{ secrets.CML_PAT }}
         run: |
-          export KUBECONFIG_DATA=$(cat $KUBECONFIG)
           # https://cml.dev/doc/ref/runner
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#machine-type
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#{cpu}-{memory}
