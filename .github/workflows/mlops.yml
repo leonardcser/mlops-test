@@ -43,8 +43,6 @@ jobs:
         run: |
           # https://github.com/iterative/terraform-provider-iterative/blob/main/iterative/kubernetes/provider.go#L252
           export KUBERNETES_CONFIGURATION=$(kubectl config view --raw)
-          # CML uses the GOOGLE_APPLICATION_CREDENTIALS_DATA environment variable
-          export GOOGLE_APPLICATION_CREDENTIALS_DATA=$(cat $GOOGLE_APPLICATION_CREDENTIALS)
           # https://cml.dev/doc/ref/runner
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#machine-type
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#{cpu}-{memory}
