@@ -26,17 +26,17 @@ jobs:
       - name: Login to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.MLEM_GCP_SERVICE_ACCOUNT_KEY }}'
+          credentials_json: '${{ secrets.CML_GCP_SERVICE_ACCOUNT_KEY }}'
       - name: Get Google Cloud's Kubernetes credentials
         uses: 'google-github-actions/get-gke-credentials@v1'
         with:
           cluster_name: 'mlops-kubernetes'
           location: 'europe-west6-a'
+      - name: Set Kubernetes Context
+        run: kubectl config use-context $KUBERNETES_CONTEXT
       - uses: iterative/setup-cml@v1
         with:
           version: '0.19.0'
-      - name: Debug
-        run: echo $KUBECONFIG
       - name: Initialize runner on Kubernetes
         env:
           REPO_TOKEN: ${{ secrets.CML_PAT }}
