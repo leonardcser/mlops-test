@@ -34,8 +34,7 @@ jobs:
           location: 'europe-west6-a'
       - name: Set Kubernetes Context
         run: |
-          kubectl config set-context --kubeconfig $KUBECONFIG
-          kubectl config use-context --kubeconfig $KUBECONFIG
+          kubectl config get-contexts
       - uses: iterative/setup-cml@v1
         with:
           version: '0.19.0'
