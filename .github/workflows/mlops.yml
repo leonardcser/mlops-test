@@ -33,7 +33,9 @@ jobs:
           cluster_name: 'mlops-kubernetes'
           location: 'europe-west6-a'
       - name: Set Kubernetes Namespace
-        run: kubectl config set-context --current --namespace=mlops
+        run: |
+          kubectl config set-context --current --namespace=mlops
+          export KUBERNETES_CONFIGURATION=$(kubectl config view --raw)
       - uses: iterative/setup-cml@v1
         with:
           version: '0.19.0'
