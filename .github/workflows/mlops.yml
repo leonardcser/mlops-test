@@ -48,7 +48,6 @@ jobs:
             --labels="cml-runner" \
             --cloud="kubernetes" \
             --cloud-type="1-2000" \
-            --cloud-kubernetes-node-selector="gpu=true" \
             --single
 
   train:
