@@ -33,9 +33,7 @@ jobs:
           cluster_name: 'mlops-kubernetes'
           location: 'europe-west6-a'
       - name: Set Kubernetes Namespace
-        run: |
-          kubectl config set-context --current --namespace=mlops
-          export KUBERNETES_CONFIGURATION=$(kubectl config view --raw)
+        run: kubectl config set-context --current --namespace=mlops
       - uses: iterative/setup-cml@v1
         with:
           version: '0.19.0'
@@ -43,6 +41,8 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.CML_PAT }}
         run: |
+          # https://github.com/iterative/terraform-provider-iterative/blob/main/iterative/kubernetes/provider.go#L252
+          export KUBERNETES_CONFIGURATION=$(kubectl config view --raw)
           # https://cml.dev/doc/ref/runner
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#machine-type
           # https://registry.terraform.io/providers/iterative/iterative/latest/docs/resources/task#{cpu}-{memory}
