@@ -1,6 +1,6 @@
 image_name: mlops-classifier
 image_uri: mlops-classifier:latest
-namespace: mlops
+namespace: live
 object_type: deployment
 registry:
   host: europe-west6-docker.pkg.dev/mlops-test-391911/mlops-registry
